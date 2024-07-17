@@ -65,8 +65,8 @@
 
 - (void)launchAppStore:(NSString *) appId{
     [self.commandDelegate runInBackground:^{
+        // Initialize Product View Controller
         dispatch_async(dispatch_get_main_queue(), ^{
-            // Initialize Product View Controller
             SKStoreProductViewController *storeProductViewController = [[SKStoreProductViewController alloc] init];
 
             // Configure View Controller
@@ -75,13 +75,11 @@
                 if (error) {
                     NSLog(@"Error %@ with User Info %@.", error, [error userInfo]);
                 } else {
-                    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                 }
             }];
-
             [self.viewController presentViewController:storeProductViewController animated:YES completion:nil];
-
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+            
         });
     }];
 }
