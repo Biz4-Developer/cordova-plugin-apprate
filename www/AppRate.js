@@ -165,32 +165,31 @@ var AppRate = (function() {
     return counter;
   }
 
-  function showDialog(immediately) {
-    //
-    /*This method commented because we need to open appreview popup directly 
-    * without any confirmation
-    */
-    // updateCounter();
-    // if (counter.countdown === preferences.usesUntilPrompt || immediately) {
-    //   localeObj = Locales.getLocale(preferences.useLanguage, preferences.displayAppName, preferences.customLocale);
-
-    //   if (!preferences.showPromptForInAppReview && isNativePromptAvailable && preferences.reviewType &&
-    //       ((IS_IOS && preferences.reviewType.ios === 'InAppReview') || (IS_ANDROID && preferences.reviewType.android === 'InAppReview'))) {
-    //     updateCounter('stop');
-    //     AppRate.navigateToAppStore();
-    //   } else if (preferences.simpleMode) {
-    //     navigator.notification.confirm(localeObj.message, promptForStoreRatingWindowButtonClickHandler, localeObj.title, [localeObj.cancelButtonLabel, localeObj.laterButtonLabel, localeObj.rateButtonLabel]);
-    //   } else {
-    //     navigator.notification.confirm(localeObj.appRatePromptMessage, promptForAppRatingWindowButtonClickHandler, localeObj.appRatePromptTitle, [localeObj.noButtonLabel, localeObj.yesButtonLabel]);
-    //   }
-
-    //   var base = preferences.callbacks;
-    //   if (typeof base.onRateDialogShow === "function") {
-    //     base.onRateDialogShow(promptForStoreRatingWindowButtonClickHandler);
-    //   }
-    // }
-    // return AppRate;
-    AppRate.navigateToAppStore();
+  function showDialog(immediately,isShowDialog) {
+    if(isShowDialog){
+      updateCounter();
+      if (counter.countdown === preferences.usesUntilPrompt || immediately) {
+        localeObj = Locales.getLocale(preferences.useLanguage, preferences.displayAppName, preferences.customLocale);
+  
+        if (!preferences.showPromptForInAppReview && isNativePromptAvailable && preferences.reviewType &&
+            ((IS_IOS && preferences.reviewType.ios === 'InAppReview') || (IS_ANDROID && preferences.reviewType.android === 'InAppReview'))) {
+          updateCounter('stop');
+          AppRate.navigateToAppStore();
+        } else if (preferences.simpleMode) {
+          navigator.notification.confirm(localeObj.message, promptForStoreRatingWindowButtonClickHandler, localeObj.title, [localeObj.cancelButtonLabel, localeObj.laterButtonLabel, localeObj.rateButtonLabel]);
+        } else {
+          navigator.notification.confirm(localeObj.appRatePromptMessage, promptForAppRatingWindowButtonClickHandler, localeObj.appRatePromptTitle, [localeObj.noButtonLabel, localeObj.yesButtonLabel]);
+        }
+  
+        var base = preferences.callbacks;
+        if (typeof base.onRateDialogShow === "function") {
+          base.onRateDialogShow(promptForStoreRatingWindowButtonClickHandler);
+        }
+      }
+      return AppRate;
+    }else{
+          AppRate.navigateToAppStore();
+    }
   }
 
   function getAppVersion() {
@@ -294,7 +293,7 @@ var AppRate = (function() {
     return preferences;
   };
 
-  AppRate.promptForRating = function(immediately) {
+   AppRate.promptForRating = function(immediately,isShowDialog) {
     AppRate.ready.then(function() {
       if (immediately == null) {
         immediately = true;
@@ -305,7 +304,7 @@ var AppRate = (function() {
         preferences.useLanguage = window.navigator.language;
       }
 
-      showDialog(immediately);
+      showDialog(immediately,isShowDialog);
     });
   };
 
